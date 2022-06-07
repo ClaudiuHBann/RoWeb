@@ -1,0 +1,108 @@
+﻿@model PaginatedList<MvcMovie.Models.VideoGame>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Rating</th>
+            <th>ReleaseDate</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<style>
+    .pagination {
+        display: table-cell;
+        vertical-align: middle;
+        background-color: whitesmoke;
+    }
+
+    .pagination > a {
+        padding: 10px 10px 10px 10px;
+        margin: 0px 10px 0px 10px;
+    }
+
+    .pagination > a:first-of-type,
+    .pagination > a:last-of-type {
+        margin: 0px 0px 0px 0px;
+        background-color: rgb(200, 200, 200);
+    }
+</style>
+
+<div class="pagination">
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-default @prevDisabled">Previous</a>
+
+    @{
+        int leftRightSize = 2;
+        int start = Model.PageIndex - leftRightSize <= 0 ? 1 : Model.PageIndex - leftRightSize;
+        int end = Model.PageIndex + leftRightSize > Model.TotalPages ? Model.TotalPages : Model.PageIndex + leftRightSize;
+
+        if (Model.TotalPages >= leftRightSize * 2 + 1) {
+            if (start == 1) {
+                end = 1 + leftRightSize * 2;
+            } else if (end == Model.TotalPages) {
+                start = Model.TotalPages - leftRightSize * 2;
+            }
+        } else {
+            start = 1;
+            end = Model.TotalPages;
+        }
+
+        for (int i = start; i <= end; i++) {
+            if (i == Model.PageIndex) {
+                <a asp-action="Index" asp-route-pageNumber="@i" style="background-color:rgb(225, 225, 225);" class="btn btn-default">@i</a>
+            } else {
+                <a asp-action="Index" asp-route-pageNumber="@i" class="btn btn-default">@i</a>
+            }
+        }
+    }
+
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-default @nextDisabled">Next</a>
+</div>
