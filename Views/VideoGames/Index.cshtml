@@ -64,16 +64,16 @@
         background-color: whitesmoke;
     }
 
-    .pagination > a {
-        padding: 10px 10px 10px 10px;
-        margin: 0px 10px 0px 10px;
-    }
+        .pagination > a {
+            padding: 10px 10px 10px 10px;
+            margin: 0px 10px 0px 10px;
+        }
 
-    .pagination > a:first-of-type,
-    .pagination > a:last-of-type {
-        margin: 0px 0px 0px 0px;
-        background-color: rgb(200, 200, 200);
-    }
+            .pagination > a:first-of-type,
+            .pagination > a:last-of-type {
+                margin: 0px 0px 0px 0px;
+                background-color: rgb(200, 200, 200);
+            }
 </style>
 
 <div class="pagination">
@@ -95,12 +95,20 @@
             end = Model.TotalPages;
         }
 
+        if (Model.TotalPages >= leftRightSize * 2 + 1 &&
+        start != 1) {
+            <a asp-action="Index" asp-route-pageNumber="1" style="background-color:rgb(225, 225, 225);" class="btn btn-default">1</a>
+        }
         for (int i = start; i <= end; i++) {
             if (i == Model.PageIndex) {
                 <a asp-action="Index" asp-route-pageNumber="@i" style="background-color:rgb(225, 225, 225);" class="btn btn-default">@i</a>
             } else {
                 <a asp-action="Index" asp-route-pageNumber="@i" class="btn btn-default">@i</a>
             }
+        }
+        if (Model.TotalPages >= leftRightSize * 2 + 1 &&
+        end != Model.TotalPages) {
+            <a asp-action="Index" asp-route-pageNumber="@Model.TotalPages" style="background-color:rgb(225, 225, 225);" class="btn btn-default">@Model.TotalPages</a>
         }
     }
 
