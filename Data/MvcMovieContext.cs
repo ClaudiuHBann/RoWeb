@@ -8,5 +8,7 @@ namespace MvcMovie.Data {
         public DbSet<Models.Movie>? Movie { get; set; }
 
         public DbSet<MvcMovie.Models.VideoGame>? VideoGame { get; set; }
+
+        public DbSet<MvcMovie.Models.Review>? Review { get; set; }
     }
 }
