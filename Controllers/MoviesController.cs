@@ -23,6 +23,25 @@ namespace MvcMovie.Controllers {
             }
         }
 
+        [HttpPost]
+        public IActionResult PostReview(int? id, string username, string content) {
+            if (id == null) {
+                return RedirectToAction("Index");
+            }
+
+            _context.Add(
+                    new Review {
+                        MovieId = (int)id,
+                        Username = username,
+                        PostDate = DateTime.Now,
+                        Content = content
+                    }
+                    );
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", new { id });
+        }
+
         public async Task<IActionResult> Details(int? id) {
             if (id == null ||
                 _context.Movie == null) {
@@ -33,6 +52,14 @@ namespace MvcMovie.Controllers {
             if (movie == null) {
                 return NotFound();
             }
+
+            var reviews =
+                from r
+                in _context.Review
+                where r.MovieId == id
+                select r;
+
+            ViewData["reviews"] = reviews.ToList();
 
             return View(movie);
         }

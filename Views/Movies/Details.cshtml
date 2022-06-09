@@ -10,32 +10,76 @@
     <h4>Movie</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ReleaseDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ReleaseDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Genre)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Genre)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
     </dl>
 </div>
+
+<style>
+
+</style>
+
+<ul class="reviewsList">
+    @{
+        var reviews = (List<Review>?)ViewData["reviews"];
+        foreach (var review in reviews) {
+            <li>
+                <div>
+                    <b>@review.Username</b> on <i>@review.PostDate</i> said:
+                </div>
+                <div>@review.Content</div>
+            </li>
+        }
+    }
+</ul>
+
+<div class="reviewAdd">
+</div>
+
+<div class="container">
+    <h3 class="display-4">Add new review</h3>
+
+    <form method="post" enctype="multipart/form-data" asp-controller="Movies" asp-action="PostReview" asp-route-id="@Model?.Id">
+        <table>
+            <tr>
+                <td>Username: </td>
+                <td><input type="text" id="txtUsername" name="username" /></td>
+            </tr>
+            <tr>
+                <td>Content: </td>
+                <td><input type="text" id="txtContent" name="content" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Submit" /></td>
+            </tr>
+        </table>
+        <hr />
+    </form>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

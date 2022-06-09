@@ -50,6 +50,38 @@ namespace MvcMovie.Models {
             context.SaveChanges();
         }
 
+        public static void InitializeMoviesReviews(IServiceProvider serviceProvider) {
+            using var context = new MvcMovieContext(serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
+
+            if (context.Review == null) {
+                return;
+            }
+
+            foreach (var r in context.Review) {
+                context.Remove(r);
+            }
+            context.SaveChanges();
+
+            if (context.Review.Any()) {
+                return;
+            }
+
+            var moviesIds = from m in context.Movie select m.Id;
+            var moviesIdsArray = moviesIds.ToArray();
+
+            for (int i = 0; i < _random.Next(200, 500); i++) {
+                context.Add(
+                    new Review {
+                        MovieId = _random.Next(moviesIdsArray[0], moviesIdsArray[^1] + 1),
+                        Username = RandomString(14),
+                        PostDate = RandomDateTime(),
+                        Content = RandomString(33)
+                    }
+                    );
+            }
+            context.SaveChanges();
+        }
+
         public static void InitializeVideoGames(IServiceProvider serviceProvider) {
             using var context = new MvcMovieContext(serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
 
