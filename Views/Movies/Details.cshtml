@@ -37,17 +37,14 @@
     </dl>
 </div>
 
-<style>
-
-</style>
-
-<ul class="reviewsList">
+<h2>Reviews</h2>
+<ul class="list-group">
     @{
         var reviews = (List<Review>?)ViewData["reviews"];
         foreach (var review in reviews) {
-            <li>
+            <li class="list-group-item">
                 <div>
-                    <b>@review.Username</b> on <i>@review.PostDate</i> said:
+                    <b>@review.Username</b> <i>@DateTime.Now.Subtract(review.PostDate).Days days ago</i>
                 </div>
                 <div>@review.Content</div>
             </li>
@@ -55,28 +52,29 @@
     }
 </ul>
 
-<div class="reviewAdd">
-</div>
+<br />
 
 <div class="container">
-    <h3 class="display-4">Add new review</h3>
+    <h2>Add a review</h2>
 
     <form method="post" enctype="multipart/form-data" asp-controller="Movies" asp-action="PostReview" asp-route-id="@Model?.Id">
-        <table>
-            <tr>
-                <td>Username: </td>
-                <td><input type="text" id="txtUsername" name="username" /></td>
-            </tr>
-            <tr>
-                <td>Content: </td>
-                <td><input type="text" id="txtContent" name="content" /></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" value="Submit" /></td>
-            </tr>
-        </table>
-        <hr />
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
+            </div>
+            <input type="text" id="txtUsername" name="username" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Content</span>
+            </div>
+            <input type="text" id="txtContent" name="content" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+
+        <input type="submit" value="Post" class="btn btn-primary" style="float:right; font-size:1.25rem;" />
+
+        <br /><br /><hr />
     </form>
 </div>
 

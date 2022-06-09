@@ -44,6 +44,4 @@ namespace MvcMovie {
     TO DO:
         - generate more realistic data
         - add comments on things that i made
-        - add css
-        - 
  */
