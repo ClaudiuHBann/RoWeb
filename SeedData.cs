@@ -1,26 +1,17 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Net;
 
 using Microsoft.EntityFrameworkCore;
+
+using Newtonsoft.Json;
 
 using MvcMovie.Data;
 
 namespace MvcMovie.Models {
     public static class SeedData {
         private static readonly Random _random = new();
-        private const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string RandomString(int length) {
-            return new string(Enumerable.Repeat(alphabet, length).Select(s => s[_random.Next(s.Length)]).ToArray());
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime RandomDateTime() {
-            DateTime start = new(1970, 1, 1);
-            int range = (DateTime.Today - start).Days;
-            return start.AddDays(_random.Next(range));
-        }
-
+        // Generates random realistic movies
         public static void InitializeMovies(IServiceProvider serviceProvider) {
             using var context = new MvcMovieContext(serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
 
@@ -28,28 +19,34 @@ namespace MvcMovie.Models {
                 return;
             }
 
-            /*foreach (var m in context.Movie) {
+            // We delete the current movies
+            foreach (var m in context.Movie) {
                 context.Remove(m);
             }
-            context.SaveChanges();*/
+            context.SaveChanges();
 
-            if (context.Movie.Any()) {
+            // We generate a random number of movies and get the json with the movies data
+            int rows = _random.Next(18, 69);
+            var json = GetRandomMockaroo("59aa1ac0", rows);
+            if (json == null) {
                 return;
             }
 
-            for (int i = 0; i < _random.Next(18, 69); i++) {
+            // We create the movies and update the database
+            for (int i = 0; i < rows; i++) {
                 context.Add(
                     new Movie {
-                        Title = RandomString(18),
-                        ReleaseDate = RandomDateTime(),
-                        Genre = RandomString(10),
-                        Price = (decimal)_random.NextDouble() * 100.0M
+                        Title = json[i].Title,
+                        ReleaseDate = DateTime.Parse($"{json[i].ReleaseDate} {json[i].ReleaseTime}"),
+                        Genre = json[i].Genre,
+                        Price = json[i].Price
                     }
                     );
             }
             context.SaveChanges();
         }
 
+        // Generates random realistic movies reviews
         public static void InitializeMoviesReviews(IServiceProvider serviceProvider) {
             using var context = new MvcMovieContext(serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
 
@@ -57,31 +54,38 @@ namespace MvcMovie.Models {
                 return;
             }
 
+            // We delete the current movies reviews
             foreach (var r in context.Review) {
                 context.Remove(r);
             }
             context.SaveChanges();
 
-            if (context.Review.Any()) {
-                return;
-            }
-
+            // We get the movies ids
             var moviesIds = from m in context.Movie select m.Id;
             var moviesIdsArray = moviesIds.ToArray();
 
-            for (int i = 0; i < _random.Next(200, 500); i++) {
+            // We generate a random number of movies reviews and get the json with the movies reviews data
+            int rows = _random.Next(200, 500);
+            var json = GetRandomMockaroo("6d3f10a0", rows);
+            if (json == null) {
+                return;
+            }
+
+            // We create the movies reviews and update the database
+            for (int i = 0; i < rows; i++) {
                 context.Add(
                     new Review {
                         MovieId = _random.Next(moviesIdsArray[0], moviesIdsArray[^1] + 1),
-                        Username = RandomString(14),
-                        PostDate = RandomDateTime(),
-                        Content = RandomString(33)
+                        Username = json[i].Username,
+                        PostDate = DateTime.Parse($"{json[i].PostDate} {json[i].PostTime}"),
+                        Content = json[i].Content
                     }
                     );
             }
             context.SaveChanges();
         }
 
+        // Generates random video games data
         public static void InitializeVideoGames(IServiceProvider serviceProvider) {
             using var context = new MvcMovieContext(serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
 
@@ -89,28 +93,40 @@ namespace MvcMovie.Models {
                 return;
             }
 
-            /*foreach (var vg in context.VideoGame) {
+            // We delete the current video games
+            foreach (var vg in context.VideoGame) {
                 context.Remove(vg);
             }
-            context.SaveChanges();*/
+            context.SaveChanges();
 
-            if (context.VideoGame.Any()) {
+            // We generate a random number of video games and get the json with the video games data
+            int rows = _random.Next(18, 69);
+            var json = GetRandomMockaroo("76caf240", rows);
+            if (json == null) {
                 return;
             }
 
-            for (int i = 0; i < _random.Next(18, 69); i++) {
+            // We create the video games and update the database
+            for (int i = 0; i < rows; i++) {
                 context.Add(
                     new VideoGame {
-                        Title = RandomString(18),
-                        Description = RandomString(25),
-                        Rating = (byte)_random.Next(0, 10),
-                        ReleaseDate = RandomDateTime(),
-                        Genre = RandomString(10),
-                        Price = (decimal)_random.NextDouble() * 100.0M
+                        Title = json[i].Title,
+                        Description = json[i].Description,
+                        Rating = json[i].Rating,
+                        ReleaseDate = DateTime.Parse($"{json[i].ReleaseDate} {json[i].ReleaseTime}"),
+                        Genre = json[i].Genre,
+                        Price = json[i].Price
                     }
                     );
             }
             context.SaveChanges();
+        }
+
+        // Returns the json from the Mockaroo url
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static dynamic? GetRandomMockaroo(string schema, int rows, string key = "d7ccea10") {
+            var response = new WebClient().DownloadString($"https://api.mockaroo.com/api/{schema}?count={rows}&key={key}");
+            return JsonConvert.DeserializeObject(response);
         }
     }
 }

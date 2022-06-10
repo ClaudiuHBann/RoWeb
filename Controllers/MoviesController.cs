@@ -23,6 +23,7 @@ namespace MvcMovie.Controllers {
             }
         }
 
+        // Movie's review's form post method
         [HttpPost]
         public IActionResult PostReview(int? id, string username, string content) {
             if (id == null) {
@@ -53,6 +54,7 @@ namespace MvcMovie.Controllers {
                 return NotFound();
             }
 
+            // We get all the reviews of that movie and store them as a list in the view's data
             var reviews =
                 from r
                 in _context.Review

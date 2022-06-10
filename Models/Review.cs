@@ -3,8 +3,11 @@
 namespace MvcMovie.Models {
     public class Review {
         public int Id { get; set; }
+
+        // Foreign Key: MovieId -> Movie.Id
         public int MovieId { get; set; }
         public Movie? Movie { get; set; }
+
         public string? Username { get; set; }
         [DataType(DataType.Date)]
         public DateTime PostDate { get; set; }

@@ -13,7 +13,7 @@ namespace MvcMovie.Migrations
 {
     [DbContext(typeof(MvcMovieContext))]
     [Migration("20220608220421_addedMoviesReviewsDBLogic")]
-    partial class addedMoviesReviewsDBLogic
+    partial class AddedMoviesReviewsDBLogic
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

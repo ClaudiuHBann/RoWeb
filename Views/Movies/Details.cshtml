@@ -37,23 +37,27 @@
     </dl>
 </div>
 
+@* We list all the reviews for the current selected movie *@
 <h2>Reviews</h2>
 <ul class="list-group">
     @{
         var reviews = (List<Review>?)ViewData["reviews"];
-        foreach (var review in reviews) {
-            <li class="list-group-item">
-                <div>
-                    <b>@review.Username</b> <i>@DateTime.Now.Subtract(review.PostDate).Days days ago</i>
-                </div>
-                <div>@review.Content</div>
-            </li>
+        if (reviews != null) {
+            foreach (var review in reviews) {
+                <li class="list-group-item">
+                    <div>
+                        <b>@review.Username</b> <i>@DateTime.Now.Subtract(review.PostDate).Days days ago</i>
+                    </div>
+                    <div>@review.Content</div>
+                </li>
+            }
         }
     }
 </ul>
 
 <br />
 
+@* We create the post form for the movie review creation *@
 <div class="container">
     <h2>Add a review</h2>
 

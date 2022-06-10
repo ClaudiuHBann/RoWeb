@@ -15,6 +15,8 @@ namespace MvcMovie {
 
             using (var scope = app.Services.CreateScope()) {
                 var services = scope.ServiceProvider;
+
+                // We generate random data with Mockaroo(https://www.mockaroo.com)
                 SeedData.InitializeMovies(services);
                 SeedData.InitializeMoviesReviews(services);
 
@@ -39,9 +41,3 @@ namespace MvcMovie {
         }
     }
 }
-
-/*
-    TO DO:
-        - generate more realistic data
-        - add comments on things that i made
- */

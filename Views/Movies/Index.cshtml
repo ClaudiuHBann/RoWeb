@@ -49,6 +49,7 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
+@* A small style for the pagination *@
 <style>
     .pagination {
         display: table-cell;
@@ -72,25 +73,31 @@
     <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-default @prevDisabled">Previous</a>
 
     @{
-        int leftRightSize = 2;
+        int leftRightSize = 2;// how many pages to show on left and right from current page index
+        // create the start and end page to show
         int start = Model.PageIndex - leftRightSize <= 0 ? 1 : Model.PageIndex - leftRightSize;
         int end = Model.PageIndex + leftRightSize > Model.TotalPages ? Model.TotalPages : Model.PageIndex + leftRightSize;
 
+        // if we can show the all the pages in the paginations size
         if (Model.TotalPages >= leftRightSize * 2 + 1) {
+            // clip the start or end values
             if (start == 1) {
                 end = 1 + leftRightSize * 2;
             } else if (end == Model.TotalPages) {
                 start = Model.TotalPages - leftRightSize * 2;
             }
         } else {
+            // clip the start and end values
             start = 1;
             end = Model.TotalPages;
         }
 
+        // if there are more pages than the pagination size and the page index is not 1 then we display the first page in the pagination
         if (Model.TotalPages >= leftRightSize * 2 + 1 &&
         start != 1) {
             <a asp-action="Index" asp-route-pageNumber="1" style="background-color:rgb(225, 225, 225);" class="btn btn-default">1</a>
         }
+        // we create the pages
         for (int i = start; i <= end; i++) {
             if (i == Model.PageIndex) {
                 <a asp-action="Index" asp-route-pageNumber="@i" style="background-color:rgb(225, 225, 225);" class="btn btn-default">@i</a>
@@ -98,6 +105,7 @@
                 <a asp-action="Index" asp-route-pageNumber="@i" class="btn btn-default">@i</a>
             }
         }
+        // if there are more pages than the pagination size and the page index is not the last one then we display the last page in the pagination
         if (Model.TotalPages >= leftRightSize * 2 + 1 &&
         end != Model.TotalPages) {
             <a asp-action="Index" asp-route-pageNumber="@Model.TotalPages" style="background-color:rgb(225, 225, 225);" class="btn btn-default">@Model.TotalPages</a>
